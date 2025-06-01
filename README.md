@@ -1,3 +1,6 @@
+This is an unofficial SpiderOakONE helper library for personal use. It is not affiliated with SpiderOak.
+
+
 ```
 usage: spideroak [-h] Enter {command} -h/--help for additional information ...
 
