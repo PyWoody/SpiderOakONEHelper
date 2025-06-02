@@ -4,8 +4,8 @@ import tempfile
 from spideroak import cli_path, tail
 
 
-def run(*args, verbose=False, **kwargs):
-    if not verbose:
+def run(*args, redirect_stdout=False, **kwargs):
+    if not redirect_stdout:
         return subprocess.run([cli_path, *args], **kwargs)
     with tempfile.NamedTemporaryFile(
         mode='w', encoding='utf8', suffix='.log'

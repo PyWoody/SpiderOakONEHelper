@@ -5,7 +5,7 @@ from spideroak.utils import Verbosity
 def sync(verbose=Verbosity.NONE):
     proc = command.run(
         '--sync',
-        verbose=False if verbose is Verbosity.NONE else True,
+        redirect_stdout=False if verbose is Verbosity.NONE else True,
     )
     if proc.returncode != 0:
         raise Exception('Was not able to initiate sync')

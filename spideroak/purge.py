@@ -9,7 +9,7 @@ def purge(device, filepath, verbose=Verbosity.NONE):
         f'--device={device}',
         f'--purge={filepath}',
         '--verbose' if verbose is Verbosity.HIGH else '',
-        verbose=True if verbose is Verbosity.HIGH else False,
+        redirect_stdout=True if verbose is Verbosity.HIGH else False,
         capture_output=True,
     )
     if proc.returncode != 0:

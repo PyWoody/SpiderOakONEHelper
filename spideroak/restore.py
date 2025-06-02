@@ -20,7 +20,7 @@ def restore(device, filepath, output=None, verbose=Verbosity.NONE):
         f'--restore={filepath}',
         f'--output={output}',
         '--verbose' if verbose is Verbosity.HIGH else '',
-        verbose=True if verbose is Verbosity.HIGH else False,
+        redirect_stdout=True if verbose is Verbosity.HIGH else False,
         capture_output=True,
     )
     if proc.returncode != 0:
