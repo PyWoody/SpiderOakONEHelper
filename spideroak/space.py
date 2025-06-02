@@ -6,7 +6,3 @@ def space():
     if proc.returncode != 0:
         raise Exception('Was not able to initiate space')
     print(proc.stdout.decode('utf8', errors='replace'))
-
-
-if __name__ == '__main__':
-    space()

@@ -6,7 +6,3 @@ def spideroak_help():
     if proc.returncode != 0:
         raise Exception('Was not able to run --help for SpiderOakONE')
     print(proc.stdout.decode('utf8', errors='replace'))
-
-
-if __name__ == '__main__':
-    spideroak_help()

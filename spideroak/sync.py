@@ -9,7 +9,3 @@ def sync(verbose=Verbosity.NONE):
     )
     if proc.returncode != 0:
         raise Exception('Was not able to initiate sync')
-
-
-if __name__ == '__main__':
-    sync()

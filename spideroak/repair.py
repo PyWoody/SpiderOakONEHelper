@@ -9,7 +9,3 @@ def repair(verbose=Verbosity.NORMAL):
     )
     if proc.returncode != 0:
         raise Exception('Was not able to initiate repair')
-
-
-if __name__ == '__main__':
-    repair()

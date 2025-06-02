@@ -11,7 +11,3 @@ def vacuum(verbose=Verbosity.NORMAL):
         raise Exception("Unable to run 'vacuum'")
     if verbose is not Verbosity.NONE and proc.stdout:
         print(proc.stdout.decode('utf8', errors='replace'))
-
-
-if __name__ == '__main__':
-    vacuum()
