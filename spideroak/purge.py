@@ -4,24 +4,27 @@ from spideroak import command
 from spideroak.utils import Verbosity
 
 
-def purge(device, filepath):
+def purge(device, filepath, verbose=Verbosity.NONE):
     proc = command.run(
-        f'--device={device}', f'--purge={filepath}', capture_output=True,
+        f'--device={device}',
+        f'--purge={filepath}',
+        '--verbose' if verbose is Verbosity.HIGH else '',
+        verbose=True if verbose is Verbosity.HIGH else False,
+        capture_output=True,
     )
     if proc.returncode != 0:
         raise Exception(f'Was not able to purge {filepath}')
     stdout = proc.stdout.decode('utf8', errors='replace').strip()
-    if stdout == (
-        f"No journals for u'{filepath}' were found in the backup tree."
-    ):
+    if 'No journals for ' in stdout or 'does not exist ' in stdout:
         return False
     return True
 
 
 def purge_files(device, files, verbose=Verbosity.NORMAL):
+    end = '\n' if verbose is Verbosity.HIGH else '\r'
     for i, f in enumerate(files, start=1):
         if verbose is not Verbosity.NONE:
-            print(f'[] ({i}/{len(files)}) Purging {f}', end='\r', flush=True)
+            print(f'[] ({i}/{len(files)}) Purging {f}', end=end, flush=True)
         if purge(device, f):
             if verbose is not Verbosity.NONE:
                 print(f'[*] ({i}/{len(files)}) Purged {f}')
