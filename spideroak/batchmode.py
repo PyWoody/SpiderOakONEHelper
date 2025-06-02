@@ -1,13 +1,10 @@
-import subprocess
-
-from spideroak import cli_path
+from spideroak import command, utils
 
 
-def batchmode():
-    proc = subprocess.run([cli_path, '--batchmode'])
+def batchmode(verbose=utils.Verbosity.NONE):
+    if verbose is not utils.Verbosity.NONE:
+        proc = command.run('--batchmode', '--verbose', verbose=True)
+    else:
+        proc = command.run('--batchmode')
     if proc.returncode != 0:
-        raise Exception('Was not able to initiate batchmode')
-
-
-if __name__ == '__main__':
-    batchmode()
+        raise Exception('Batchmode failed')

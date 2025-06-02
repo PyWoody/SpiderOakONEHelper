@@ -1,12 +1,10 @@
-import subprocess
-
-from spideroak import cli_path
+from spideroak import command
 
 
 def userinfo():
-    proc = subprocess.run([cli_path, '--userinfo'], capture_output=True)
+    proc = command.run('--userinfo', capture_output=True)
     if proc.returncode != 0:
-        raise Exception(proc.stderr.decode('utf8', errors='replace').strip())
+        raise Exception('Failed to generate userinfo')
     print(proc.stdout.decode('utf8', errors='replace'))
 
 

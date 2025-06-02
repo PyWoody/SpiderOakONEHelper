@@ -1,10 +1,11 @@
-import subprocess
+from spideroak import command
+from spideroak.utils import Verbosity
 
-from spideroak import cli_path
 
-
-def repair():
-    proc = subprocess.run([cli_path, '--repair'])
+def repair(verbose=Verbosity.NORMAL):
+    proc = command.run(
+        '--repair', verbose=False if verbose is Verbosity.NONE else True
+    )
     if proc.returncode != 0:
         raise Exception('Was not able to initiate repair')
 

@@ -1,39 +1,51 @@
 import os
 import re
-import subprocess
 
-from spideroak import cli_path
-from spideroak.utils import Verbosity
+from spideroak import command, tail, utils
 
 
-def build(device, update=False, verbose=Verbosity.NORMAL):
-    if verbose is not Verbosity.NONE:
-        print(f'[] Generating TREE for {device}...', end='\r', flush=True)
+def build(device, update=False, verbose=utils.Verbosity.NORMAL):
+    if verbose is not utils.Verbosity.NONE:
+        end = '\n' if verbose is utils.Verbosity.HIGH else '\r'
+        print(f'[] Generating TREE for {device}...', end=end, flush=True)
     root = os.path.join(
         os.path.abspath(os.path.dirname(__file__)), 'files'
     )
     output = os.path.join(root, f'{device}_tree.txt')
     if not update and os.path.isfile(output):
-        if verbose is not Verbosity.NONE:
+        if verbose is not utils.Verbosity.NONE:
             print(f'[!] TREE exists for {device}.Skipping.')
         return
     os.makedirs(root, exist_ok=True)
-    proc = subprocess.run(
-        [
-            cli_path,
-            f'--device={device}',
-            '--tree',
-            f'--redirect={output}',
-        ]
-    )
+    if verbose is utils.Verbosity.HIGH:
+        tail_thread = tail.TailThread(
+            target=tail.log_tail,
+            args=(output,),
+            kwargs={'sleep': .25, 'until': 2},
+        )
+        tail_thread.start()
+    else:
+        tail_thread = None
+    try:
+        proc = command.run(
+            f'--device={device}', '--tree', f'--redirect={output}'
+        )
+    except Exception as e:
+        if tail_thread is not None:
+            tail_thread.stop()
+            tail_thread.join()
+        raise e from None
+    if verbose is utils.Verbosity.HIGH:
+        tail_thread.completed()
+        tail_thread.join()  # Prevents re-reading updated version
     if proc.returncode != 0:
         raise Exception(f'Was not able to build a tree for {device}')
-    if verbose is not Verbosity.NONE:
+    if verbose is not utils.Verbosity.NONE:
         print(f'[*] Generated TREE for {device}   ')
 
 
-def clean(device, verbose=Verbosity.NORMAL):
-    if verbose is not Verbosity.NONE:
+def clean(device, verbose=utils.Verbosity.NORMAL):
+    if verbose is not utils.Verbosity.NONE:
         print(f'[] Cleaning TREE for {device}...', end='\r', flush=True)
     root = os.path.join(
         os.path.abspath(os.path.dirname(__file__)), 'files'
@@ -57,5 +69,5 @@ def clean(device, verbose=Verbosity.NORMAL):
                         _ = out_f.write(trunk)
                         _ = out_f.write('\n')
     os.replace(f'{output}.tmp', output)
-    if verbose is not Verbosity.NONE:
+    if verbose is not utils.Verbosity.NONE:
         print(f'[*] Cleaned TREE for {device}   ')

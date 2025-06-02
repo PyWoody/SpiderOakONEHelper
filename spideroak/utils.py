@@ -16,7 +16,6 @@ def logdir():
             os.path.expandvars('%LOCALAPPDATA%'), 'SpiderOak', 'SpiderOakONE'
         ),
     ]
-    path = next((i for i in possible_paths if os.path.isdir(i)), None)
-    if not path:
-        raise Exception('Could not locate log directory')
-    return path
+    if path := next((i for i in possible_paths if os.path.isdir(i)), None):
+        return path
+    raise Exception('Could not locate log directory')

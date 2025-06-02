@@ -1,17 +1,12 @@
 import os
-import subprocess
 
-from spideroak import cli_path
+from spideroak import command
 from spideroak.utils import Verbosity
 
 
 def purge(device, filepath):
-    proc = subprocess.run(
-        [
-            cli_path,
-            f'--device={device}',
-            f'--purge={filepath}',
-        ], capture_output=True
+    proc = command.run(
+        f'--device={device}', f'--purge={filepath}', capture_output=True,
     )
     if proc.returncode != 0:
         raise Exception(f'Was not able to purge {filepath}')

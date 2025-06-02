@@ -1,7 +1,6 @@
 import os
-import subprocess
 
-from spideroak import cli_path
+from spideroak import command
 from spideroak.utils import Verbosity
 
 
@@ -10,35 +9,34 @@ from spideroak.utils import Verbosity
 #           Maybe use userinfo.txt to do normalization?
 #           Also accept journal numbers
 
-def restore(device, filepath, output=None):
+def restore(device, filepath, output=None, verbose=Verbosity.NONE):
     if output is None:
         output = os.path.join(
             os.path.abspath(os.path.dirname(__file__)), 'restored',
         )
     os.makedirs(output, exist_ok=True)
-    proc = subprocess.run(
-        [
-            cli_path,
-            f'--device={device}',
-            f'--restore={filepath}',
-            f'--output={output}',
-        ], capture_output=True
+    proc = command.run(
+        f'--device={device}',
+        f'--restore={filepath}',
+        f'--output={output}',
+        '--verbose' if verbose is Verbosity.HIGH else '',
+        capture_output=True,
+        verbose=True if verbose is Verbosity.HIGH else False,
     )
     if proc.returncode != 0:
         raise Exception(f'Was not able to restore {filepath}')
     stdout = proc.stdout.decode('utf8', errors='replace').strip()
-    if stdout == (
-        f"No journals for u'{filepath}' were found in the backup tree."
-    ):
+    if 'No journals for ' in stdout or 'does not exist ' in stdout:
         return False
     return True
 
 
 def restore_files(device, files, output=None, verbose=Verbosity.NORMAL):
+    end = '\n' if verbose is Verbosity.HIGH else '\r'
     for i, f in enumerate(files, start=1):
         if verbose is not Verbosity.NONE:
-            print(f'[] ({i}/{len(files)}) Restoring {f}', end='\r', flush=True)
-        if restore(device, f, output=output):
+            print(f'[] ({i}/{len(files)}) Restoring {f}', end=end, flush=True)
+        if restore(device, f, output=output, verbose=verbose):
             if verbose is not Verbosity.NONE:
                 print(f'[*] ({i}/{len(files)}) Restored {f}')
         else:

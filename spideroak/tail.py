@@ -4,6 +4,7 @@ import re
 import time
 
 from datetime import datetime
+from threading import Thread
 
 try:
     from rich import print
@@ -11,6 +12,43 @@ except ModuleNotFoundError:
     pass
 
 from spideroak import utils
+
+
+class TailThread(Thread):
+
+    def __init__(self, **kwargs):
+        kwargs.update({'daemon': True})
+        super().__init__(**kwargs)
+        self.complete = False
+        self.stopped = False
+
+    def run(self):
+        if 'last_read_pos' not in self._kwargs:
+            self._kwargs['last_read_pos'] = 0
+        while not self.stopped and not self.complete:
+            try:
+                last_read_pos = self._target(*self._args, **self._kwargs)
+            except FileNotFoundError:
+                # Command interrupted, logfile already deleted
+                return
+            else:
+                self._kwargs['last_read_pos'] = last_read_pos
+        if not self.stopped:
+            # Retry to read the last chunk of the file, just in case there was
+            # more written. Prevents race condition
+            self._kwargs['sleep'] = 0
+            self._kwargs['until'] = 0
+            try:
+                _ = self._target(*self._args, **self._kwargs)
+            except FileNotFoundError:
+                # Command interrupted, logfile already deleted
+                return
+
+    def completed(self):
+        self.complete = True
+
+    def stop(self):
+        self.stopped = True
 
 
 def tail():

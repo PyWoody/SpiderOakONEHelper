@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-from spideroak import cli_path, utils
+from spideroak import cli_path, utils, tail
 
 
 def build(device, verbose=utils.Verbosity.NORMAL):
@@ -12,14 +12,32 @@ def build(device, verbose=utils.Verbosity.NORMAL):
     )
     os.makedirs(root, exist_ok=True)
     output = os.path.join(root, f'{device}_full.txt')
-    proc = subprocess.run(
-        [
-            cli_path,
-            f'--device={device}',
-            '--fulllist',
-            f'--redirect={output}',
-        ]
-    )
+    if verbose is utils.Verbosity.HIGH:
+        tail_thread = tail.TailThread(
+            target=tail.log_tail,
+            args=(output,),
+            kwargs={'sleep': .5, 'until': 2},
+        )
+        tail_thread.start()
+    else:
+        tail_thread = None
+    try:
+        proc = subprocess.run(
+            [
+                cli_path,
+                f'--device={device}',
+                '--fulllist',
+                f'--redirect={output}',
+            ]
+        )
+    except Exception as e:
+        if tail_thread is not None:
+            tail_thread.stop()
+            tail_thread.join()
+        raise e from None
+    if verbose is utils.Verbosity.HIGH:
+        tail_thread.completed()
+        tail_thread.join()  # Prevents re-reading updated version
     if proc.returncode != 0:
         raise Exception(f'Was not able to build a FULLLIST for {device}')
     if verbose is not utils.Verbosity.NONE:

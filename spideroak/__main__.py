@@ -145,7 +145,7 @@ restore_parser = subparsers.add_parser(
     'restore',
     help='Download files, folders from backups to disk',
     description='Restore (download) files, folders from backups to disk',
-    parents=[verbose_parser, output_parser, update_parser],
+    parents=[verbose_parser, output_parser],
 )
 restore_parser.add_argument(
     '-d',
@@ -216,6 +216,7 @@ repair_parser = subparsers.add_parser(
     'repair',
     help='Repair a local SpiderOakONE installation.',
     description='Repair a local SpiderOakONE installation.',
+    parents=[verbose_parser],
 )
 
 spideroakhelp_parser = subparsers.add_parser(
@@ -240,6 +241,7 @@ sync_parser = subparsers.add_parser(
     'sync',
     help='Initiates sync',
     description='Like batchmode, but only backup/update synced directories.',
+    parents=[verbose_parser],
 )
 
 tail_parser = subparsers.add_parser(
@@ -277,7 +279,7 @@ if args.command is not None:
         if args.logs_location:
             print(utils.logdir())
     elif args.command == 'repair':
-        repair.repair()
+        repair.repair(verbose=verbosity)
     elif args.command == 'shutdown':
         shutdown.shutdown()
     elif args.command == 'space':
@@ -285,7 +287,7 @@ if args.command is not None:
     elif args.command == 'spideroakhelp':
         spideroak_help.spideroak_help()
     elif args.command == 'sync':
-        sync.sync()
+        sync.sync(verbose=verbosity)
     elif args.command == 'tree':
         for device in args.devices:
             tree.build(device, update=args.update, verbose=verbosity)
@@ -305,7 +307,6 @@ if args.command is not None:
                 args.files,
                 output=args.output,
                 verbose=verbosity,
-                update=args.update,
             )
         if args.filepath:
             restore.restore_files_from_file(
@@ -313,7 +314,6 @@ if args.command is not None:
                 args.filepath,
                 output=args.output,
                 verbose=verbosity,
-                update=args.update,
             )
     elif args.command == 'fulllist':
         fpath = os.path.join(

@@ -1,13 +1,10 @@
-import subprocess
-
-from spideroak import cli_path
+from spideroak import command, utils
 
 
-def headless():
-    proc = subprocess.run([cli_path, '--headless'])
+def headless(verbose=utils.Verbosity.NONE):
+    if verbose is not utils.Verbosity.NONE:
+        proc = command.run('--headless', '--verbose', verbose=True)
+    else:
+        proc = command.run('--headless')
     if proc.returncode != 0:
-        raise Exception('Was not able to initiate headless')
-
-
-if __name__ == '__main__':
-    headless()
+        raise Exception('Headless failed')

@@ -1,12 +1,10 @@
-import subprocess
-
-from spideroak import cli_path
+from spideroak import command
 
 
 def spideroak_help():
-    proc = subprocess.run([cli_path, '--help'], capture_output=True)
+    proc = command.run('--help', capture_output=True)
     if proc.returncode != 0:
-        raise Exception('Was not able to run help')
+        raise Exception('Was not able to run --help for SpiderOakONE')
     print(proc.stdout.decode('utf8', errors='replace'))
 
 
