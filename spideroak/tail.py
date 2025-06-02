@@ -16,7 +16,7 @@ from spideroak import utils
 def tail():
     log_re = re.compile(r'_\d{14}\.log', re.IGNORECASE)
     log_path = utils.logdir()
-    prev_log = None
+    prev_log = ''
     logs_pos = dict()
     datetime_key = setup_datetime()
     try:
@@ -31,16 +31,16 @@ def tail():
                 )
             except ValueError:
                 raise Exception('No logs found on device')
-            if prev_log is not None and prev_log != log:
+            if prev_log != log:
                 print(f'\n\tNow tailing {log}\n')
-            last_read_pos = _tail(log, last_read_pos=logs_pos.get(log, 0))
+            last_read_pos = log_tail(log, last_read_pos=logs_pos.get(log, 0))
             logs_pos[log] = last_read_pos
             prev_log = log
     except KeyboardInterrupt:
         return
 
 
-def _tail(log, last_read_pos=0, sleep=.5, until=10):
+def log_tail(log, last_read_pos=0, sleep=.5, until=10):
     elapsed = 0
     with open(log, 'rb') as f:
         reader = io.BufferedReader(f)
@@ -54,12 +54,16 @@ def _tail(log, last_read_pos=0, sleep=.5, until=10):
                 if prev_data:
                     data = prev_data + data
                     prev_data = b''
-                head = 0
-                while (tail := data.find(b'\n', head)) != -1:
-                    print(data[head:tail].decode('utf8', errors='replace'))
-                    head = tail + 1
-                if head != len(data):
-                    prev_data = data[head:]
+                if data.endswith(b'\n'):
+                    lines = data.splitlines()
+                else:
+                    *lines, prev_data = data.splitlines()
+                if lines:
+                    print(
+                        '\n'.join(
+                            i.decode('utf8', errors='replace') for i in lines
+                        )
+                    )
                 if elapsed > 0:
                     elapsed = 0
             else:
@@ -90,7 +94,3 @@ def setup_datetime():
         )
 
     return compute
-
-
-if __name__ == '__main__':
-    tail()
