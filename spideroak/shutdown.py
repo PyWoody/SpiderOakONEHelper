@@ -6,7 +6,7 @@ def shutdown(*, yes=False, verbose=Verbosity.NORMAL):
     if not yes:
         response = input(
             'Shutting down a running SpiderOakONE application may lead to '
-            'lost data and imcomplete syncs. Are you sure you wish to '
+            'lost data and incomplete syncs. Are you sure you wish to '
             'continue? (y/N) |> '
         )
         if response.lower().strip() != 'y':

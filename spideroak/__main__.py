@@ -48,7 +48,7 @@ update_parser.add_argument(
 
 output_parser = argparse.ArgumentParser(add_help=False)
 output_parser.add_argument(
-    '--output', help='Output location for saved, downladed, or restored items.'
+    '--output', help='Output location for saved, downloaded, or restored items.'
 )
 
 verbose_parser = argparse.ArgumentParser(add_help=False)
@@ -170,13 +170,13 @@ purge_parser.add_argument(
     '-f',
     '--files',
     nargs='+',
-    help='Item or items seperated by whitespace to be purged. '
+    help='Item or items separated by whitespace to be purged. '
          'All paths should be wrapped in quotations.'
 )
 purge_parser.add_argument(
     '--filepath',
     help='Filepath to a .txt file containing a list files or '
-         'folders seperated by newline to be purged'
+         'folders separated by newline to be purged'
 )
 
 restore_parser = subparsers.add_parser(
@@ -196,13 +196,13 @@ restore_parser.add_argument(
     '-f',
     '--files',
     nargs='+',
-    help='Item or items seperated by whitespace to be restored (downloaded)'
+    help='Item or items separated by whitespace to be restored (downloaded)'
          'All paths should be wrapped in quotations.'
 )
 restore_parser.add_argument(
     '--filepath',
     help='Filepath to a .txt file containing a list files or '
-         'folders seperated by newline to be restored (downloaded)'
+         'folders separated by newline to be restored (downloaded)'
 )
 
 tree_parser = subparsers.add_parser(
