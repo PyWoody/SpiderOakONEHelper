@@ -1,7 +1,6 @@
 import os
-import subprocess
 
-from spideroak import cli_path, utils, tail
+from spideroak import command, utils, tail
 
 
 def build(device, verbose=utils.Verbosity.NORMAL):
@@ -22,13 +21,8 @@ def build(device, verbose=utils.Verbosity.NORMAL):
     else:
         tail_thread = None
     try:
-        proc = subprocess.run(
-            [
-                cli_path,
-                f'--device={device}',
-                '--fulllist',
-                f'--redirect={output}',
-            ]
+        proc = command.run(
+            f'--device={device}', '--fulllist', f'--redirect={output}',
         )
     except Exception as e:
         if tail_thread is not None:
