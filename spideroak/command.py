@@ -27,6 +27,6 @@ def run(*args, redirect_stdout=False, **kwargs):
             tail_thread.completed()
         finally:
             tail_thread.join()
-        if kwargs.get('capture_output'):
+        if kwargs.get('capture_output') and not proc.stdout:
             proc.stdout = open(tmp_file.name, 'rb').read()
     return proc
