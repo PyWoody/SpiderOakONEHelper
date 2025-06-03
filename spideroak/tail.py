@@ -17,7 +17,7 @@ from spideroak import utils
 class TailThread(Thread):
 
     def __init__(self, **kwargs):
-        kwargs.update({'daemon': True})
+        kwargs['daemon'] = True
         super().__init__(**kwargs)
         self.complete = False
         self.stopped = False
