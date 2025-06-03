@@ -4,7 +4,7 @@ import re
 from spideroak import command, tail, utils
 
 
-def build(device, update=False, verbose=utils.Verbosity.NORMAL):
+def build(device, *, update=False, verbose=utils.Verbosity.NORMAL):
     if verbose is not utils.Verbosity.NONE:
         end = '\n' if verbose is utils.Verbosity.HIGH else '\r'
         print(f'[] Generating TREE for {device}...', end=end, flush=True)
@@ -44,7 +44,7 @@ def build(device, update=False, verbose=utils.Verbosity.NORMAL):
         print(f'[*] Generated TREE for {device}   ')
 
 
-def clean(device, verbose=utils.Verbosity.NORMAL):
+def clean(device, *, verbose=utils.Verbosity.NORMAL):
     if verbose is not utils.Verbosity.NONE:
         print(f'[] Cleaning TREE for {device}...', end='\r', flush=True)
     root = os.path.join(

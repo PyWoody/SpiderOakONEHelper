@@ -3,7 +3,7 @@ import os
 from spideroak import command, utils, tail
 
 
-def build(device, verbose=utils.Verbosity.NORMAL):
+def build(device, /, *, verbose=utils.Verbosity.NORMAL):
     if verbose is not utils.Verbosity.NONE:
         print(f'[] Generating FULLLIST for {device}...', end='\r', flush=True)
     root = os.path.join(

@@ -8,7 +8,7 @@ YES_TO_ALL = False
 QUIT = False
 
 
-def purge(device, filepath, yes=False, verbose=Verbosity.NONE):
+def purge(device, filepath, /, *, yes=False, verbose=Verbosity.NONE):
     global YES_TO_ALL, QUIT
     if not yes and not YES_TO_ALL:
         while True:
@@ -46,7 +46,7 @@ def purge(device, filepath, yes=False, verbose=Verbosity.NONE):
     return True
 
 
-def purge_files(device, files, yes=False, verbose=Verbosity.NORMAL):
+def purge_files(device, files, /, *, yes=False, verbose=Verbosity.NORMAL):
     end = '\n' if verbose is Verbosity.HIGH else '\r'
     for i, f in enumerate(files, start=1):
         if QUIT:
@@ -62,7 +62,7 @@ def purge_files(device, files, yes=False, verbose=Verbosity.NORMAL):
 
 
 def purge_files_from_file(
-    device, filepath, yes=False, verbose=Verbosity.NORMAL
+    device, filepath, /, *, yes=False, verbose=Verbosity.NORMAL
 ):
     if os.path.splitext(filepath)[1].lower() != '.txt':
         raise Exception('Only .txt files are supported at the moment.')

@@ -1,7 +1,7 @@
 from spideroak import command, utils
 
 
-def destroy(yes=False, verbose=utils.Verbosity.NONE):
+def destroy(*, yes=False, verbose=utils.Verbosity.NONE):
     if not yes:
         response = input(
             'Running this operation will destroy the upload shelf for the '

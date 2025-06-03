@@ -2,7 +2,7 @@ from spideroak import command
 from spideroak.utils import Verbosity
 
 
-def vacuum(verbose=Verbosity.NORMAL):
+def vacuum(*, verbose=Verbosity.NORMAL):
     proc = command.run(
         '--vacuum',
         capture_output=False if verbose is Verbosity.NONE else True

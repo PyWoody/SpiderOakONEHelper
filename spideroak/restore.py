@@ -9,7 +9,7 @@ from spideroak.utils import Verbosity
 #           Maybe use userinfo.txt to do normalization?
 #           Also accept journal numbers
 
-def restore(device, filepath, output=None, verbose=Verbosity.NONE):
+def restore(device, filepath, /, *, output=None, verbose=Verbosity.NONE):
     if output is None:
         output = os.path.join(
             os.path.abspath(os.path.dirname(__file__)), 'restored',
@@ -31,7 +31,7 @@ def restore(device, filepath, output=None, verbose=Verbosity.NONE):
     return True
 
 
-def restore_files(device, files, output=None, verbose=Verbosity.NORMAL):
+def restore_files(device, files, /, *, output=None, verbose=Verbosity.NORMAL):
     end = '\n' if verbose is Verbosity.HIGH else '\r'
     for i, f in enumerate(files, start=1):
         if verbose is not Verbosity.NONE:
@@ -45,7 +45,7 @@ def restore_files(device, files, output=None, verbose=Verbosity.NORMAL):
 
 
 def restore_files_from_file(
-    device, filepath, output=None, verbose=Verbosity.NORMAL
+    device, filepath, /, *, output=None, verbose=Verbosity.NORMAL
 ):
     if os.path.splitext(filepath)[1].lower() != '.txt':
         raise Exception('Only .txt files are supported at the moment.')

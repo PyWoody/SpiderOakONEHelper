@@ -2,7 +2,7 @@ from spideroak import command
 from spideroak.utils import Verbosity
 
 
-def sync(verbose=Verbosity.NONE):
+def sync(*, verbose=Verbosity.NONE):
     proc = command.run(
         '--sync',
         redirect_stdout=False if verbose is Verbosity.NONE else True,
