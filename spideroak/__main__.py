@@ -29,7 +29,7 @@ parser = argparse.ArgumentParser(
 
     Run `python3 -m spideroak spideroakhelp` for the official SpiderOakONE help.
 
-    Run `python3 -m spideroak utils --cli-location` to find your locally 
+    Run `python3 -m spideroak utils --cli-location` to find your locally
     installed SpiderOakONE executable location.
     '''  # noqa: E501
 )

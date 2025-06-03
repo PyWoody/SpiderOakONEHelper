@@ -36,11 +36,11 @@ def restore_files(device, files, output=None, verbose=Verbosity.NORMAL):
     for i, f in enumerate(files, start=1):
         if verbose is not Verbosity.NONE:
             print(f'[] ({i}/{len(files)}) Restoring {f}', end=end, flush=True)
-        if restore(device, f, output=output, verbose=verbose):
-            if verbose is not Verbosity.NONE:
+        success = restore(device, f, output=output, verbose=verbose)
+        if verbose is not Verbosity.NONE:
+            if success:
                 print(f'[*] ({i}/{len(files)}) Restored {f}')
-        else:
-            if verbose is not Verbosity.NONE:
+            else:
                 print(f'[!] ({i}/{len(files)}) Not Restored {f}')
 
 

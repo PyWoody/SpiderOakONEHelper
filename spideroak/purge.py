@@ -25,11 +25,11 @@ def purge_files(device, files, verbose=Verbosity.NORMAL):
     for i, f in enumerate(files, start=1):
         if verbose is not Verbosity.NONE:
             print(f'[] ({i}/{len(files)}) Purging {f}', end=end, flush=True)
-        if purge(device, f):
-            if verbose is not Verbosity.NONE:
+        success = purge(device, f)
+        if verbose is not Verbosity.NONE:
+            if success:
                 print(f'[*] ({i}/{len(files)}) Purged {f}')
-        else:
-            if verbose is not Verbosity.NONE:
+            else:
                 print(f'[!] ({i}/{len(files)}) Not Purged {f}')
 
 
