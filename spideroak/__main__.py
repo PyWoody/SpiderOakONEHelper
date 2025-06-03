@@ -71,6 +71,14 @@ batchmode_parser = subparsers.add_parser(
                 'available work is done.',
 )
 
+build_parser = subparsers.add_parser(
+    'build',
+    help='Initiates build',
+    description='Scans the filesystem and builds all possible file system '
+                'changes as shelved upload transactions. Exits without '
+                'uploading them'
+)
+
 fulllist_parser = subparsers.add_parser(
     'fulllist',
     help='Save all directories and files stored on device to file',
@@ -270,6 +278,8 @@ elif args.command == 'vacuum':
     vacuum.vacuum(verbose=verbosity)
 elif args.command == 'batchmode':
     batchmode.batchmode()
+elif args.command == 'build':
+    build.build()
 elif args.command == 'headless':
     headless.headless()
 elif args.command == 'tail':
