@@ -3,6 +3,8 @@ import os
 
 from spideroak import (
     batchmode,
+    build,
+    destroy,
     fulllist,
     headless,
     heap,
@@ -12,6 +14,7 @@ from spideroak import (
     tail,
     userinfo,
     utils,
+    rebuild,
     repair,
     shutdown,
     space,
@@ -45,7 +48,7 @@ update_parser.add_argument(
 
 output_parser = argparse.ArgumentParser(add_help=False)
 output_parser.add_argument(
-    '--output', help='Ouptut location for saved, downladed, or restored items.'
+    '--output', help='Output location for saved, downladed, or restored items.'
 )
 
 verbose_parser = argparse.ArgumentParser(add_help=False)
@@ -58,6 +61,16 @@ verbose_parser.add_argument(
          'Default is Verbosity.NONE (0)'
 )
 
+yes_parser = argparse.ArgumentParser(add_help=False)
+yes_parser.add_argument(
+    '-y',
+    '--yes',
+    default=False,
+    action='store_true',
+    help='Flag for automatically approving any and all actions without prompt',
+)
+
+
 subparsers = parser.add_subparsers(
     dest='command',
     title='Commands',
@@ -69,6 +82,7 @@ batchmode_parser = subparsers.add_parser(
     help='Initiates batchmode',
     description='Like headless, but will exit when all '
                 'available work is done.',
+    parents=[verbose_parser],
 )
 
 build_parser = subparsers.add_parser(
@@ -76,7 +90,18 @@ build_parser = subparsers.add_parser(
     help='Initiates build',
     description='Scans the filesystem and builds all possible file system '
                 'changes as shelved upload transactions. Exits without '
-                'uploading them'
+                'uploading them',
+    parents=[verbose_parser],
+)
+
+destroy_parser = subparsers.add_parser(
+    'destroy',
+    help='Clear the queue of all transactions',
+    description='Clear the queue of all transactions, including file uploads. '
+                'It is suggested to run --rebuild after this completes. '
+                'You may then need to run --batchmode or --headless after '
+                'completion to re-sync your local installation',
+    parents=[verbose_parser, yes_parser],
 )
 
 fulllist_parser = subparsers.add_parser(
@@ -122,6 +147,7 @@ headless_parser = subparsers.add_parser(
     'headless',
     help='Initiates headless',
     description='Run in headless mode (without the graphical interface).',
+    parents=[verbose_parser],
 )
 
 purge_parser = subparsers.add_parser(
@@ -131,7 +157,7 @@ purge_parser = subparsers.add_parser(
          'will need to start up and shut down per use. It is highly '
          'suggested to delete directories from their lowest root level '
          'instead of deleting individual files or folders',
-    parents=[verbose_parser],
+    parents=[verbose_parser, yes_parser],
 )
 purge_parser.add_argument(
     '-d',
@@ -224,6 +250,15 @@ utils_parser.add_argument(
     action='store_true',
     default=False,
 )
+
+rebuild_parser = subparsers.add_parser(
+    'rebuild',
+    help='Rebuild the SpiderOakONE reference database',
+    description='Rebuild the SpiderOakONE reference database, '
+                'which may take a long time to complete',
+    parents=[verbose_parser],
+)
+
 repair_parser = subparsers.add_parser(
     'repair',
     help='Repair a local SpiderOakONE installation.',
@@ -236,6 +271,7 @@ spideroakhelp_parser = subparsers.add_parser(
     help='Connects to a running SpiderOakONE instance and shuts it down',
     description='Connects to a running SpiderOakONE '
                 'instance and shuts it down',
+    parents=[verbose_parser, yes_parser],
 )
 space_parser = subparsers.add_parser(
     'space',
@@ -277,11 +313,13 @@ if args.command is None:
 elif args.command == 'vacuum':
     vacuum.vacuum(verbose=verbosity)
 elif args.command == 'batchmode':
-    batchmode.batchmode()
+    batchmode.batchmode(verbose=verbosity)
 elif args.command == 'build':
-    build.build()
+    build.build(verbose=verbosity)
+elif args.command == 'destroy':
+    destroy.destroy(verbose=verbosity, yes=args.yes)
 elif args.command == 'headless':
-    headless.headless()
+    headless.headless(verbose=verbosity)
 elif args.command == 'tail':
     tail.tail()
 elif args.command == 'userinfo':
@@ -292,10 +330,12 @@ elif args.command == 'utils':
         print(cli_path)
     if args.logs_location:
         print(utils.logdir())
+elif args.command == 'rebuild':
+    rebuild.rebuild(verbose=verbosity)
 elif args.command == 'repair':
     repair.repair(verbose=verbosity)
 elif args.command == 'shutdown':
-    shutdown.shutdown()
+    shutdown.shutdown(verbose=verbosity, yes=args.yes)
 elif args.command == 'space':
     space.space()
 elif args.command == 'spideroakhelp':
@@ -309,10 +349,12 @@ elif args.command == 'tree':
             tree.clean(device, verbose=verbosity)
 elif args.command == 'purge':
     if args.files:
-        purge.purge_files(args.device, args.files, verbose=verbosity)
+        purge.purge_files(
+            args.device, args.files, yes=args.yes, verbose=verbosity
+        )
     if args.filepath:
         purge.purge_files_from_file(
-            args.device, args.filepath, verbose=verbosity
+            args.device, args.filepath, yes=args.yes, verbose=verbosity
         )
 elif args.command == 'restore':
     if args.files:

@@ -2,7 +2,16 @@ from spideroak import command
 from spideroak.utils import Verbosity
 
 
-def shutdown(verbose=Verbosity.NORMAL):
+def shutdown(*, yes=False, verbose=Verbosity.NORMAL):
+    if not yes:
+        response = input(
+            'Shutting down a running SpiderOakONE application may lead to '
+            'lost data and imcomplete syncs. Are you sure you wish to '
+            'continue? (y/N) |> '
+        )
+        if response.lower().strip() != 'y':
+            print('Aborting shutdown')
+            return
     proc = command.run(
         '--shutdown',
         capture_output=False if verbose is Verbosity.NONE else True
