@@ -82,22 +82,25 @@ heap_parser = subparsers.add_parser(
     'heap',
     help='Utility to find files to remove',
     description='A helpful utility for finding large files, directories with '
-                'a large number of files, or files a high number of '
+                'a large number of files, or files with a high number of '
                 'historical versions. This can be useful for finding files '
                 'to purge.',
 )
-heap_parser.add_argument('device')
+heap_parser.add_argument(
+    'device_or_file',
+    help='Device number or filepath for existing fulllist output',
+)
 heap_parser.add_argument(
     '--len',
     action='store_true',
     default=False,
-    help='Sort by number of files in directory',
+    help='Sort by number of files in each directory',
 )
 heap_parser.add_argument(
     '--size',
     action='store_true',
     default=False,
-    help='Sort by file size',
+    help='Sort by largest file size',
 )
 heap_parser.add_argument(
     '--history',
@@ -137,7 +140,7 @@ purge_parser.add_argument(
 )
 purge_parser.add_argument(
     '--filepath',
-    help='Filepath to the .txt file that contains a list files or '
+    help='Filepath to a .txt file containing a list files or '
          'folders seperated by newline to be purged'
 )
 
@@ -163,7 +166,7 @@ restore_parser.add_argument(
 )
 restore_parser.add_argument(
     '--filepath',
-    help='Filepath to the .txt file that contains a list files or '
+    help='Filepath to a .txt file containing a list files or '
          'folders seperated by newline to be restored (downloaded)'
 )
 
@@ -260,84 +263,87 @@ elif args.v == 1:
 else:
     verbosity = utils.Verbosity.HIGH
 
-if args.command is not None:
-    # Preflight
-    if args.command == 'vacuum':
-        vacuum.vacuum(verbose=verbosity)
-    elif args.command == 'batchmode':
-        batchmode.batchmode()
-    elif args.command == 'headless':
-        headless.headless()
-    elif args.command == 'tail':
-        tail.tail()
-    elif args.command == 'userinfo':
-        userinfo.userinfo()
-    elif args.command == 'utils':
-        if args.cli_location:
-            from spideroak import cli_path
-            print(cli_path)
-        if args.logs_location:
-            print(utils.logdir())
-    elif args.command == 'repair':
-        repair.repair(verbose=verbosity)
-    elif args.command == 'shutdown':
-        shutdown.shutdown()
-    elif args.command == 'space':
-        space.space()
-    elif args.command == 'spideroakhelp':
-        spideroak_help.spideroak_help()
-    elif args.command == 'sync':
-        sync.sync(verbose=verbosity)
-    elif args.command == 'tree':
-        for device in args.devices:
-            tree.build(device, update=args.update, verbose=verbosity)
-            if not args.no_clean:
-                tree.clean(device, verbose=verbosity)
-    elif args.command == 'purge':
-        if args.files:
-            purge.purge_files(args.device, args.files, verbose=verbosity)
-        if args.filepath:
-            purge.purge_files_from_file(
-                args.device, args.filepath, verbose=verbosity
-            )
-    elif args.command == 'restore':
-        if args.files:
-            restore.restore_files(
-                args.device,
-                args.files,
-                output=args.output,
-                verbose=verbosity,
-            )
-        if args.filepath:
-            restore.restore_files_from_file(
-                args.device,
-                args.filepath,
-                output=args.output,
-                verbose=verbosity,
-            )
-    elif args.command == 'fulllist':
+if args.command is None:
+    parser.print_help()
+elif args.command == 'vacuum':
+    vacuum.vacuum(verbose=verbosity)
+elif args.command == 'batchmode':
+    batchmode.batchmode()
+elif args.command == 'headless':
+    headless.headless()
+elif args.command == 'tail':
+    tail.tail()
+elif args.command == 'userinfo':
+    userinfo.userinfo()
+elif args.command == 'utils':
+    if args.cli_location:
+        from spideroak import cli_path
+        print(cli_path)
+    if args.logs_location:
+        print(utils.logdir())
+elif args.command == 'repair':
+    repair.repair(verbose=verbosity)
+elif args.command == 'shutdown':
+    shutdown.shutdown()
+elif args.command == 'space':
+    space.space()
+elif args.command == 'spideroakhelp':
+    spideroak_help.spideroak_help()
+elif args.command == 'sync':
+    sync.sync(verbose=verbosity)
+elif args.command == 'tree':
+    for device in args.devices:
+        tree.build(device, update=args.update, verbose=verbosity)
+        if not args.no_clean:
+            tree.clean(device, verbose=verbosity)
+elif args.command == 'purge':
+    if args.files:
+        purge.purge_files(args.device, args.files, verbose=verbosity)
+    if args.filepath:
+        purge.purge_files_from_file(
+            args.device, args.filepath, verbose=verbosity
+        )
+elif args.command == 'restore':
+    if args.files:
+        restore.restore_files(
+            args.device,
+            args.files,
+            output=args.output,
+            verbose=verbosity,
+        )
+    if args.filepath:
+        restore.restore_files_from_file(
+            args.device,
+            args.filepath,
+            output=args.output,
+            verbose=verbosity,
+        )
+elif args.command == 'fulllist':
+    fpath = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        'files',
+        f'{args.device}_full.txt'
+    )
+    if not os.path.isfile(fpath) or args.update:
+        fulllist.build(args.device, verbose=verbosity)
+elif args.command == 'heap':
+    if os.path.isfile(args.device_or_file):
+        fpath = args.device_or_filee
+    else:
         fpath = os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
             'files',
-            f'{args.device}_full.txt'
+            f'{args.device_or_file}_full.txt'
         )
-        if not os.path.isfile(fpath) or args.update:
-            fulllist.build(args.device, verbose=verbosity)
-    elif args.command == 'heap':
-        fpath = os.path.join(
-            os.path.abspath(os.path.dirname(__file__)),
-            'files',
-            f'{args.device}_full.txt'
+    if not os.path.isfile(fpath):
+        print(
+            f'No full list for {args.device}. '
+            'Run `python -m spideroak fulllist {device}` first.'
         )
-        if not os.path.isfile(fpath):
-            print(
-                f'No full list for {args.device}. '
-                f'Run `python -m spideroak fulllist {args.device}` first.'
-            )
-        else:
-            if args.len:
-                heap.by_len(fpath)
-            if args.size:
-                heap.by_size(fpath)
-            if args.history:
-                heap.by_history(fpath)
+    else:
+        if args.len:
+            heap.by_len(fpath)
+        if args.size:
+            heap.by_size(fpath)
+        if args.history:
+            heap.by_history(fpath)
