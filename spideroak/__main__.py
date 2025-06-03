@@ -20,7 +20,8 @@ from spideroak import (
     space,
     spideroak_help,
     sync,
-    vacuum
+    vacuum,
+    version,
 )
 
 
@@ -228,6 +229,13 @@ vacuum_parser = subparsers.add_parser(
                 'certain situations.',
     parents=[verbose_parser],
 )
+
+version_parser = subparsers.add_parser(
+    'version',
+    help="Print application's version number",
+    description="Print application's version number",
+)
+
 userinfo_parser = subparsers.add_parser(
     'userinfo',
     help='Show current userinfo',
@@ -312,6 +320,8 @@ if args.command is None:
     parser.print_help()
 elif args.command == 'vacuum':
     vacuum.vacuum(verbose=verbosity)
+elif args.command == 'version':
+    version.version()
 elif args.command == 'batchmode':
     batchmode.batchmode(verbose=verbosity)
 elif args.command == 'build':
