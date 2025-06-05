@@ -6,4 +6,3 @@ def version():
     if proc.returncode != 0:
         raise Exception('Was not able to run --version for SpiderOakONE')
     print(proc.stdout.decode('utf8', errors='replace'))
-
