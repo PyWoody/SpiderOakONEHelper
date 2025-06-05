@@ -96,13 +96,12 @@ def log_tail(log, last_read_pos=0, sleep=.5, until=10):
                     lines = data.splitlines()
                 else:
                     *lines, prev_data = data.splitlines()
-                lines = [i for i in lines if i.strip()]
+                lines = [
+                    i.decode('utf8', errors='replace')
+                    for i in lines if i.strip()
+                ]
                 if lines:
-                    print(
-                        '\n'.join(
-                            i.decode('utf8', errors='replace') for i in lines
-                        )
-                    )
+                    print('\n'.join(lines))
                 if elapsed > 0:
                     elapsed = 0
             else:
