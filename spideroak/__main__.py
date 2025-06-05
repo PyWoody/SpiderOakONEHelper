@@ -49,7 +49,8 @@ update_parser.add_argument(
 
 output_parser = argparse.ArgumentParser(add_help=False)
 output_parser.add_argument(
-    '--output', help='Output location for saved, downloaded, or restored items.'
+    '--output',
+    help='Output location for saved, downloaded, or restored items.'
 )
 
 verbose_parser = argparse.ArgumentParser(add_help=False)
@@ -168,8 +169,8 @@ purge_parser.add_argument(
     help='Device number that uploaded the item'
 )
 purge_parser.add_argument(
-    '-f',
-    '--files',
+    '-p',
+    '--paths',
     nargs='+',
     help='Item or items separated by whitespace to be purged. '
          'All paths should be wrapped in quotations.'
@@ -194,8 +195,8 @@ restore_parser.add_argument(
     help='Device number that uploaded the item'
 )
 restore_parser.add_argument(
-    '-f',
-    '--files',
+    '-p',
+    '--paths',
     nargs='+',
     help='Item or items separated by whitespace to be restored (downloaded)'
          'All paths should be wrapped in quotations.'
@@ -358,24 +359,24 @@ elif args.command == 'tree':
         if not args.no_clean:
             tree.clean(device, verbose=verbosity)
 elif args.command == 'purge':
-    if args.files:
-        purge.purge_files(
-            args.device, args.files, yes=args.yes, verbose=verbosity
+    if args.paths:
+        purge.purge_paths(
+            args.device, args.paths, yes=args.yes, verbose=verbosity
         )
     if args.filepath:
-        purge.purge_files_from_file(
+        purge.purge_paths_from_file(
             args.device, args.filepath, yes=args.yes, verbose=verbosity
         )
 elif args.command == 'restore':
-    if args.files:
-        restore.restore_files(
+    if args.paths:
+        restore.restore_paths(
             args.device,
-            args.files,
+            args.paths,
             output=args.output,
             verbose=verbosity,
         )
     if args.filepath:
-        restore.restore_files_from_file(
+        restore.restore_paths_from_file(
             args.device,
             args.filepath,
             output=args.output,

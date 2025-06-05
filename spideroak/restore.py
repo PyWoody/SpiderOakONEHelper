@@ -31,24 +31,24 @@ def restore(device, filepath, /, *, output=None, verbose=Verbosity.NONE):
     return True
 
 
-def restore_files(device, files, /, *, output=None, verbose=Verbosity.NORMAL):
+def restore_paths(device, paths, /, *, output=None, verbose=Verbosity.NORMAL):
     end = '\n' if verbose is Verbosity.HIGH else '\r'
-    for i, f in enumerate(files, start=1):
+    for i, f in enumerate(paths, start=1):
         if verbose is not Verbosity.NONE:
-            print(f'[] ({i}/{len(files)}) Restoring {f}', end=end, flush=True)
+            print(f'[] ({i}/{len(paths)}) Restoring {f}', end=end, flush=True)
         success = restore(device, f, output=output, verbose=verbose)
         if verbose is not Verbosity.NONE:
             if success:
-                print(f'[*] ({i}/{len(files)}) Restored {f}')
+                print(f'[*] ({i}/{len(paths)}) Restored {f}')
             else:
-                print(f'[!] ({i}/{len(files)}) Not Restored {f}')
+                print(f'[!] ({i}/{len(paths)}) Not Restored {f}')
 
 
-def restore_files_from_file(
+def restore_paths_from_file(
     device, filepath, /, *, output=None, verbose=Verbosity.NORMAL
 ):
     if os.path.splitext(filepath)[1].lower() != '.txt':
         raise Exception('Only .txt files are supported at the moment.')
     with open(filepath, 'r', encoding='utf8') as f:
-        files = [i.strip() for i in f if i.strip()]
-    restore_files(device, files, output=output, verbose=verbose)
+        paths = [i.strip() for i in f if i.strip()]
+    restore_paths(device, paths, output=output, verbose=verbose)
