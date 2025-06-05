@@ -41,6 +41,10 @@ def psuedo_key(item):
 
 
 def walk(filepath):
+    # NOTE: There is an issue where the output from fulllist doesn't
+    #       properly cut off the last root. Due to this, there is no
+    #       `if root: yield root, file_lines, files`
+    #       at the end of the func.
     trunk_re = re.compile(r'trunk: \d+: (.*)')
     file_re = re.compile(r"current: u'(.*)': type:file")
     root = None
