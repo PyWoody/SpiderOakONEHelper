@@ -1,3 +1,4 @@
+import os
 import subprocess
 import tempfile
 
@@ -7,8 +8,10 @@ from spideroak import cli_path, tail
 def run(*args, redirect_stdout=False, **kwargs):
     if not redirect_stdout:
         return subprocess.run([cli_path, *args], **kwargs)
+    tmp_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '.tmp')
+    os.makedirs(tmp_dir, exist_ok=True)
     with tempfile.NamedTemporaryFile(
-        mode='w', encoding='utf8', suffix='.log'
+        mode='w', encoding='utf8', suffix='.log', dir=tmp_dir,
     ) as tmp_file:
         tail_thread = tail.TailThread(
             target=tail.log_tail,
