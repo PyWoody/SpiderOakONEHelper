@@ -8,6 +8,7 @@ cache.db*
 # snisp specific
 spideroak/files
 spideroak/restored
+spideroak/.tmp
 
 # Vim-stuff
 # Swap
