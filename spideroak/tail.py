@@ -28,7 +28,7 @@ class TailThread(Thread):
         while not self.stopped and not self.complete:
             try:
                 last_read_pos = self._target(*self._args, **self._kwargs)
-            except FileNotFoundError:
+            except (PermissionError, FileNotFoundError):
                 # Command interrupted, logfile already deleted
                 return
             else:
@@ -40,7 +40,7 @@ class TailThread(Thread):
             self._kwargs['until'] = 0
             try:
                 _ = self._target(*self._args, **self._kwargs)
-            except FileNotFoundError:
+            except (PermissionError, FileNotFoundError):
                 # Command interrupted, logfile already deleted
                 return
 
