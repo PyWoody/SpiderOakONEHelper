@@ -106,7 +106,7 @@ def log_tail(log, last_read_pos=0, sleep=.5, until=10):
                     elapsed = 0
             else:
                 if elapsed >= until:  # aka, nothing for N seconds
-                    return f.tell()
+                    return max(f.tell() - len(prev_data), 0)
                 elapsed += sleep
                 time.sleep(sleep)
 
