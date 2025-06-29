@@ -32,10 +32,9 @@ def restore(device, filepath, /, *, output=None, verbose=Verbosity.NONE):
 
 
 def restore_paths(device, paths, /, *, output=None, verbose=Verbosity.NORMAL):
-    end = '\n' if verbose is Verbosity.HIGH else '\r'
     for i, f in enumerate(paths, start=1):
         if verbose is not Verbosity.NONE:
-            print(f'[] ({i}/{len(paths)}) Restoring {f}', end=end, flush=True)
+            print(f'[] ({i}/{len(paths)}) Restoring {f}', end='\r', flush=True)
         success = restore(device, f, output=output, verbose=verbose)
         if verbose is not Verbosity.NONE:
             if success:

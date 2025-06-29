@@ -6,8 +6,7 @@ from spideroak import command, tail, utils
 
 def build(device, *, update=False, verbose=utils.Verbosity.NORMAL):
     if verbose is not utils.Verbosity.NONE:
-        end = '\n' if verbose is utils.Verbosity.HIGH else '\r'
-        print(f'[] Generating TREE for {device}...', end=end, flush=True)
+        print(f'[] Generating TREE for {device}...', end='\r', flush=True)
     root = os.path.join(
         os.path.abspath(os.path.dirname(__file__)), 'files'
     )

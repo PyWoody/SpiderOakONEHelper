@@ -13,7 +13,7 @@ def purge(device, filepath, /, *, yes=False, verbose=Verbosity.NONE):
     if not yes and not YES_TO_ALL:
         while True:
             response = input(
-                'Running this operation will recursively and '
+                '\nRunning this operation will recursively and '
                 f'permanently remove {filepath} and all files under '
                 'its location.\nAre you sure you wish to continue?\n'
                 '[y] Yes  [n] No  [A] Yes to All  [q] Quit |> '
@@ -47,12 +47,11 @@ def purge(device, filepath, /, *, yes=False, verbose=Verbosity.NONE):
 
 
 def purge_paths(device, paths, /, *, yes=False, verbose=Verbosity.NORMAL):
-    end = '\n' if verbose is Verbosity.HIGH else '\r'
     for i, f in enumerate(paths, start=1):
         if QUIT:
             return
         if verbose is not Verbosity.NONE:
-            print(f'[] ({i}/{len(paths)}) Purging {f}', end=end, flush=True)
+            print(f'[] ({i}/{len(paths)}) Purging {f}', end='\r', flush=True)
         success = purge(device, f, yes=yes)
         if verbose is not Verbosity.NONE:
             if success:
