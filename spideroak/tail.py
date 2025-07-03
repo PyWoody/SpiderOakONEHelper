@@ -71,8 +71,7 @@ def tail():
                 raise Exception('No logs found on device')
             if prev_log != log:
                 print(f'\n\tNow tailing {log}\n')
-            last_read_pos = log_tail(log, last_read_pos=logs_pos.get(log, 0))
-            logs_pos[log] = last_read_pos
+            logs_pos[log] = log_tail(log, last_read_pos=logs_pos.get(log, 0))
             prev_log = log
     except KeyboardInterrupt:
         return
@@ -82,10 +81,7 @@ def log_tail(log, last_read_pos=0, sleep=.5, until=10):
     elapsed = 0
     with open(log, 'rb') as f:
         reader = io.BufferedReader(f)
-        if last_read_pos == 0:
-            _ = reader.seek(last_read_pos, os.SEEK_END)
-        else:
-            _ = reader.seek(last_read_pos)
+        _ = reader.seek(last_read_pos)
         prev_data = b''
         while True:
             if data := reader.read(io.DEFAULT_BUFFER_SIZE):
