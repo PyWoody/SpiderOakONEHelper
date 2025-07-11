@@ -81,7 +81,10 @@ def log_tail(log, last_read_pos=0, sleep=.5, until=10):
     elapsed = 0
     with open(log, 'rb') as f:
         reader = io.BufferedReader(f)
-        _ = reader.seek(last_read_pos)
+        if last_read_pos == 0:
+            _ = reader.seek(last_read_pos, os.SEEK_END)
+        else:
+            _ = reader.seek(last_read_pos)
         prev_data = b''
         while True:
             if data := reader.read(io.DEFAULT_BUFFER_SIZE):
