@@ -39,9 +39,16 @@ def build(device, /, *, verbose=utils.Verbosity.NORMAL):
         print(f'[] Cleaning FULLLIST for {device}...', end='\r', flush=True)
     with open(f'{output}.tmp', 'w', encoding='utf8') as tmp:
         with open(output, 'r', encoding='utf8') as f:
+            deleted_branch = False
             for line in f:
-                if not line.startswith('deleted_branch'):
+                if deleted_branch and not line.startswith('trunk'):
+                    continue
+                if line.startswith('deleted_branch'):
+                    deleted_branch = True
+                elif not line.startswith('deleted'):
                     _ = tmp.write(line)
+                    if deleted_branch:
+                        deleted_branch = False
     os.replace(f'{output}.tmp', output)
     if verbose is not utils.Verbosity.NONE:
         print(f'[*] Cleaned FULLLIST for {device}   ')
