@@ -180,6 +180,15 @@ purge_parser.add_argument(
     help='Filepath to a .txt file containing a list files or '
          'folders separated by newline to be purged'
 )
+purge_parser.add_argument(
+    '--batchmode',
+    action='store_true',
+    default=False,
+    help='Run --batchmode between purges. Purges do not propogate to your '
+         'SpiderOakONE client until a --batchmode or --headless has been run. '
+         'Setting this flag will automatically call --batchmode between purge '
+         'commands. It is suggested to set this flag for larger queues.'
+)
 
 restore_parser = subparsers.add_parser(
     'restore',
@@ -361,11 +370,19 @@ elif args.command == 'tree':
 elif args.command == 'purge':
     if args.paths:
         purge.purge_paths(
-            args.device, args.paths, yes=args.yes, verbose=verbosity
+            args.device,
+            args.paths,
+            yes=args.yes,
+            verbose=verbosity,
+            batchmode=args.batchmode,
         )
     if args.filepath:
         purge.purge_paths_from_file(
-            args.device, args.filepath, yes=args.yes, verbose=verbosity
+            args.device,
+            args.filepath,
+            yes=args.yes,
+            verbose=verbosity,
+            batchmode=args.batchmode,
         )
 elif args.command == 'restore':
     if args.paths:

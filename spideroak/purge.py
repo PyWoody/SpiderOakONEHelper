@@ -1,6 +1,7 @@
 import os
 
 from spideroak import command
+from spideroak.batchmode import batchmode as batchmode_cmd
 from spideroak.utils import Verbosity
 
 
@@ -46,7 +47,9 @@ def purge(device, filepath, /, *, yes=False, verbose=Verbosity.NONE):
     return True
 
 
-def purge_paths(device, paths, /, *, yes=False, verbose=Verbosity.NORMAL):
+def purge_paths(
+    device, paths, /, *, batchmode=False, yes=False, verbose=Verbosity.NORMAL
+):
     for i, f in enumerate(paths, start=1):
         if QUIT:
             return
@@ -58,13 +61,28 @@ def purge_paths(device, paths, /, *, yes=False, verbose=Verbosity.NORMAL):
                 print(f'[*] ({i}/{len(paths)}) Purged {f}')
             else:
                 print(f'[!] ({i}/{len(paths)}) Not Purged {f}')
+        if batchmode:
+            if verbose is not Verbosity.NONE:
+                print('[] Running batchmode')
+            success = batchmode_cmd()
+            if verbose is not Verbosity.NONE:
+                if success:
+                    print('[*] Batchmode completed')
+                else:
+                    print('[!] Batchmode Failed')
 
 
 def purge_paths_from_file(
-    device, filepath, /, *, yes=False, verbose=Verbosity.NORMAL
+    device,
+    filepath,
+    /,
+    *,
+    batchmode=False,
+    yes=False,
+    verbose=Verbosity.NORMAL,
 ):
     if os.path.splitext(filepath)[1].lower() != '.txt':
         raise Exception('Only .txt files are supported at the moment.')
     with open(filepath, 'r', encoding='utf8') as f:
         paths = [i.strip() for i in f if i.strip()]
-    purge_paths(device, paths, yes=yes, verbose=verbose)
+    purge_paths(device, paths, yes=yes, verbose=verbose, batchmode=batchmode)
