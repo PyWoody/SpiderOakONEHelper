@@ -8,3 +8,4 @@ def batchmode(*, verbose=utils.Verbosity.NONE):
         proc = command.run('--batchmode')
     if proc.returncode != 0:
         raise Exception('Batchmode failed')
+    return True
