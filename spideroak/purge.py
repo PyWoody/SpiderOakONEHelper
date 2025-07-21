@@ -63,7 +63,7 @@ def purge_paths(
                 print(f'[!] ({i}/{len(paths)}) Not Purged {f}')
         if batchmode:
             if verbose is not Verbosity.NONE:
-                print('[] Running batchmode')
+                print('[] Running batchmode', end='\r', flush=True)
             success = batchmode_cmd()
             if verbose is not Verbosity.NONE:
                 if success:
