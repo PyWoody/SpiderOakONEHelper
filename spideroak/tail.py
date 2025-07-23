@@ -6,11 +6,6 @@ import time
 from datetime import datetime
 from threading import Thread
 
-try:
-    from rich import print
-except ModuleNotFoundError:
-    pass
-
 from spideroak import utils
 
 
