@@ -409,7 +409,7 @@ elif args.command == 'fulllist':
         fulllist.build(args.device, verbose=verbosity)
 elif args.command == 'heap':
     if os.path.isfile(args.device_or_file):
-        fpath = args.device_or_filee
+        fpath = args.device_or_file
     else:
         fpath = os.path.join(
             os.path.abspath(os.path.dirname(__file__)),

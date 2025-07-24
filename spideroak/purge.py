@@ -65,7 +65,7 @@ def purge_paths(
             try:
                 batchmode_cmd()
             except Exception:
-                print(f'Batchmode failed')
+                print('Batchmode failed')
 
 
 def purge_paths_from_file(
