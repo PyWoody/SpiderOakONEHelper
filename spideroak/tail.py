@@ -3,6 +3,7 @@ import os
 import re
 import time
 
+from collections import deque
 from datetime import datetime
 from threading import Thread
 
@@ -77,7 +78,8 @@ def log_tail(log, last_read_pos=0, sleep=.5, until=10):
     with open(log, 'rb') as f:
         reader = io.BufferedReader(f)
         if last_read_pos == 0:
-            _ = reader.seek(last_read_pos, os.SEEK_END)
+            if data := last_lines(reader):
+                print('\n'.join(data))
         else:
             _ = reader.seek(last_read_pos)
         prev_data = b''
@@ -103,6 +105,23 @@ def log_tail(log, last_read_pos=0, sleep=.5, until=10):
                     return max(f.tell() - len(prev_data), 0)
                 elapsed += sleep
                 time.sleep(sleep)
+
+
+def last_lines(fobj, *, n=10):
+    if fobj.seek(0, os.SEEK_END) >= io.DEFAULT_BUFFER_SIZE:
+        _ = fobj.seek(-io.DEFAULT_BUFFER_SIZE, os.SEEK_END)
+    else:
+        _ = fobj.seek(0)
+    data = fobj.read(io.DEFAULT_BUFFER_SIZE)
+    if data.endswith(b'\n'):
+        lines = data.splitlines()
+    else:
+        *lines, _ = data.splitlines()
+    lines = (
+        i.decode('utf8', errors='replace')
+        for i in lines if i.strip()
+    )
+    return list(deque(lines, n))
 
 
 def setup_datetime():
