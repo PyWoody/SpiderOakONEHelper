@@ -116,7 +116,8 @@ def last_lines(fobj, *, n=10):
     if data.endswith(b'\n'):
         lines = data.splitlines()
     else:
-        *lines, _ = data.splitlines()
+        *lines, next_data = data.splitlines()
+        _ = fobj.seek(-len(next_data), os.SEEK_END)
     lines = (
         i.decode('utf8', errors='replace')
         for i in lines if i.strip()
