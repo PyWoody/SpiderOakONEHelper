@@ -109,15 +109,18 @@ def log_tail(log, last_read_pos=0, sleep=.5, until=10):
 
 def last_lines(fobj, *, n=10):
     if fobj.seek(0, os.SEEK_END) >= io.DEFAULT_BUFFER_SIZE:
-        _ = fobj.seek(-io.DEFAULT_BUFFER_SIZE, os.SEEK_END)
+        pos = fobj.seek(-io.DEFAULT_BUFFER_SIZE, os.SEEK_END)
     else:
-        _ = fobj.seek(0)
+        pos = fobj.seek(0)
     data = fobj.read(io.DEFAULT_BUFFER_SIZE)
     if data.endswith(b'\n'):
         lines = data.splitlines()
     else:
         *lines, next_data = data.splitlines()
-        _ = fobj.seek(-len(next_data), os.SEEK_END)
+        if (seek_pos := (pos - len(next_data))) > 0:
+            _ = fobj.seek(seek_pos)
+        else:
+            _ = fobj.seek(pos)
     lines = (
         i.decode('utf8', errors='replace')
         for i in lines if i.strip()
