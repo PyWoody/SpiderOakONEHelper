@@ -5,6 +5,7 @@ from spideroak import (
     batchmode,
     build,
     destroy,
+    find,
     fulllist,
     headless,
     heap,
@@ -104,6 +105,31 @@ destroy_parser = subparsers.add_parser(
                 'You may then need to run --batchmode or --headless after '
                 'completion to re-sync your local installation',
     parents=[verbose_parser, yes_parser],
+)
+
+find_parser = subparsers.add_parser(
+    'find',
+    help='Mimic basic UNIX `find` functionality',
+    description='Mimic basic UNIX `find` functionality',
+)
+find_parser.add_argument(
+    'device_or_file',
+    help='Device number or filepath for existing fulllist output',
+)
+find_parser.add_argument(
+    '-type',
+    choices=['f', 'd', None],
+    default=None,
+    metavar='',
+    help="'f' for filetype or 'd' for directory",
+)
+find_parser.add_argument(
+    '-name',
+    help='True if last component matches a case sensitive pattern.',
+)
+find_parser.add_argument(
+    '-iname',
+    help='True if last component matches a case insensitive pattern.',
 )
 
 fulllist_parser = subparsers.add_parser(
@@ -399,6 +425,30 @@ elif args.command == 'restore':
             output=args.output,
             verbose=verbosity,
         )
+elif args.command == 'find':
+    if os.path.isfile(args.device_or_file):
+        fpath = args.device_or_file
+    else:
+        fpath = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            'files',
+            f'{args.device_or_file}_full.txt'
+        )
+    if not os.path.isfile(fpath):
+        print(
+            f'No full list for {args.device}. '
+            'Run `python -m spideroak fulllist {device}` first.'
+        )
+    else:
+        type_check = True if args.type is None else False
+        for line in find.find(
+            fpath,
+            pattern=args.name,
+            ipattern=args.iname,
+            directory=True if args.type == 'd' else type_check,
+            file=True if args.type == 'f' else type_check,
+        ):
+            print(line)
 elif args.command == 'fulllist':
     fpath = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
