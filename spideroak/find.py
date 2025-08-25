@@ -4,8 +4,8 @@ import re
 
 def find(filepath, pattern=None, ipattern=None, directory=True, file=True):
     is_match = pattern_match(pattern=pattern, ipattern=ipattern)
-    trunk_re = re.compile(r'trunk: \d+: (.*)')
-    file_re = re.compile(r"current: u'(.*)': type:file")
+    trunk_re = re.compile(r'trunk: \d+: (.*)\n')
+    file_re = re.compile(r"current: u'(.*)': type:file .*\n")
     with open(filepath, 'r', encoding='utf8') as f:
         deleted_branch = False
         root = None
@@ -17,11 +17,11 @@ def find(filepath, pattern=None, ipattern=None, directory=True, file=True):
                     deleted_branch = True
                 elif not line.startswith('deleted'):
                     deleted_branch = False
-                    if match := trunk_re.match(line):
+                    if match := trunk_re.fullmatch(line):
                         root = match.group(1)
                         if directory and is_match(root):
                             yield root
-                    if file and (match := file_re.match(line)):
+                    if file and (match := file_re.fullmatch(line)):
                         group = match.group(1)
                         if is_match(group):
                             yield os.path.join(root, group)
@@ -37,7 +37,7 @@ def pattern_match(*, pattern, ipattern):
         patterns.append(re.compile(clean(ipattern), re.IGNORECASE))
 
     def compute(line):
-        return all(r.match(line) for r in patterns)
+        return all(r.fullmatch(line) for r in patterns)
 
     return compute
 
