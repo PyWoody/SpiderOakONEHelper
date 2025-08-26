@@ -20,5 +20,8 @@ def shutdown(*, yes=False, verbose=Verbosity.NORMAL):
         raise Exception('Was not able to initiate shutdown')
     if proc.stderr:
         raise Exception(proc.stderr.decode('utf8', errors='replace'))
-    if proc.stdout:
-        print(proc.stdout.decode('utf8', errors='replace'))
+    stdout = proc.stdout.decode('utf8', errors='replace').strip()
+    if stdout:
+        if stdout == 'program is already running, taking no action':
+            raise Exception(stdout)
+        print(stdout)

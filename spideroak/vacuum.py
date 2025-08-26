@@ -9,5 +9,8 @@ def vacuum(*, verbose=Verbosity.NORMAL):
     )
     if proc.returncode != 0:
         raise Exception("Unable to run 'vacuum'")
-    if verbose is not Verbosity.NONE and proc.stdout:
-        print(proc.stdout.decode('utf8', errors='replace'))
+    stdout = proc.stdout.decode('utf8', errors='replace').strip()
+    if stdout == 'program is already running, taking no action':
+        raise Exception(stdout)
+    if verbose is not Verbosity.NONE and stdout:
+        print(stdout)

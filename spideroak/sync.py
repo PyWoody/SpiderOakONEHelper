@@ -9,3 +9,6 @@ def sync(*, verbose=Verbosity.NONE):
     )
     if proc.returncode != 0:
         raise Exception('Was not able to initiate sync')
+    stdout = proc.stdout.decode('utf8', errors='replace').strip()
+    if stdout == 'program is already running, taking no action':
+        raise Exception(stdout)

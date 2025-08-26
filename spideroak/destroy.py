@@ -19,3 +19,6 @@ def destroy(*, yes=False, verbose=utils.Verbosity.NONE):
         proc = command.run('--destroy-shelved-x')
     if proc.returncode != 0:
         raise Exception('destroy failed')
+    stdout = proc.stdout.decode('utf8', errors='replace').strip()
+    if stdout == 'program is already running, taking no action':
+        raise Exception(stdout)

@@ -9,3 +9,6 @@ def repair(*, verbose=Verbosity.NORMAL):
     )
     if proc.returncode != 0:
         raise Exception('Was not able to initiate repair')
+    stdout = proc.stdout.decode('utf8', errors='replace').strip()
+    if stdout == 'program is already running, taking no action':
+        raise Exception(stdout)

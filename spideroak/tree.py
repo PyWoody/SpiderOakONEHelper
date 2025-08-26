@@ -39,6 +39,9 @@ def build(device, *, update=False, verbose=utils.Verbosity.NORMAL):
         tail_thread.join()  # Prevents re-reading updated version
     if proc.returncode != 0:
         raise Exception(f'Was not able to build a tree for {device}')
+    stdout = proc.stdout.decode('utf8', errors='replace').strip()
+    if stdout == 'program is already running, taking no action':
+        raise Exception(stdout)
     if verbose is not utils.Verbosity.NONE:
         print(f'[*] Generated TREE for {device}   ')
 

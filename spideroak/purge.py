@@ -42,6 +42,8 @@ def purge(device, filepath, /, *, yes=False, verbose=Verbosity.NONE):
     if proc.returncode != 0:
         raise Exception(f'Was not able to purge {filepath}')
     stdout = proc.stdout.decode('utf8', errors='replace').strip()
+    if stdout == 'program is already running, taking no action':
+        raise Exception(stdout)
     if 'No journals for ' in stdout or 'does not exist ' in stdout:
         return False
     return True
