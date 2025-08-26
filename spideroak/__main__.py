@@ -109,11 +109,16 @@ destroy_parser = subparsers.add_parser(
 
 find_parser = subparsers.add_parser(
     'find',
-    help='Mimic basic UNIX `find` functionality',
-    description='Mimic basic UNIX `find` functionality',
+    help='An attempt to mimic basic UNIX `find` functionality',
+    description='An attempt to mimic basic UNIX `find` functionality',
 )
 find_parser.add_argument(
-    'device_or_file',
+    'cwd',
+    help='Common root path',
+)
+find_parser.add_argument(
+    '-d', '--device_or_file',
+    required=True,
     help='Device number or filepath for existing fulllist output',
 )
 find_parser.add_argument(
@@ -443,6 +448,7 @@ elif args.command == 'find':
         type_check = True if args.type is None else False
         for line in find.find(
             fpath,
+            cwd=args.cwd,
             pattern=args.name,
             ipattern=args.iname,
             directory=True if args.type == 'd' else type_check,
