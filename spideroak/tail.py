@@ -112,20 +112,20 @@ def last_lines(fobj, *, n=10):
         pos = fobj.seek(-io.DEFAULT_BUFFER_SIZE, os.SEEK_END)
     else:
         pos = fobj.seek(0)
-    data = fobj.read(io.DEFAULT_BUFFER_SIZE)
-    if data.endswith(b'\n'):
-        lines = data.splitlines()
-    else:
-        *lines, next_data = data.splitlines()
-        if (seek_pos := (pos - len(next_data))) > 0:
-            _ = fobj.seek(seek_pos)
+    if data := fobj.read(io.DEFAULT_BUFFER_SIZE):
+        if data.endswith(b'\n'):
+            lines = data.splitlines()
         else:
-            _ = fobj.seek(pos)
-    lines = (
-        i.decode('utf8', errors='replace')
-        for i in lines if i.strip()
-    )
-    return list(deque(lines, n))
+            *lines, next_data = data.splitlines()
+            if (seek_pos := (pos - len(next_data))) > 0:
+                _ = fobj.seek(seek_pos)
+            else:
+                _ = fobj.seek(pos)
+        lines = (
+            i.decode('utf8', errors='replace')
+            for i in lines if i.strip()
+        )
+        return list(deque(lines, n))
 
 
 def setup_datetime():
