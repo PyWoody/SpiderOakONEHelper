@@ -37,7 +37,6 @@ def purge(device, filepath, /, *, yes=False, verbose=Verbosity.NONE):
         f'--purge={filepath}',
         '--verbose' if verbose is Verbosity.HIGH else '',
         redirect_stdout=True if verbose is Verbosity.HIGH else False,
-        capture_output=True,
     )
     if proc.returncode != 0:
         raise Exception(f'Was not able to purge {filepath}')

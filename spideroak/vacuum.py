@@ -3,10 +3,7 @@ from spideroak.utils import Verbosity
 
 
 def vacuum(*, verbose=Verbosity.NORMAL):
-    proc = command.run(
-        '--vacuum',
-        capture_output=False if verbose is Verbosity.NONE else True
-    )
+    proc = command.run('--vacuum')
     if proc.returncode != 0:
         raise Exception("Unable to run 'vacuum'")
     stdout = proc.stdout.decode('utf8', errors='replace').strip()

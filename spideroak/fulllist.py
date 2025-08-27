@@ -22,7 +22,7 @@ def build(device, /, *, verbose=utils.Verbosity.NORMAL):
         tail_thread = None
     try:
         proc = command.run(
-            f'--device={device}', '--fulllist', f'--redirect={output}',
+            f'--device={device}', '--fulllist', f'--redirect={output}'
         )
     except Exception as e:
         if tail_thread is not None:

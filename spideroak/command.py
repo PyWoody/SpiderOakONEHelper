@@ -5,7 +5,7 @@ import tempfile
 from spideroak import cli_path, tail, _system
 
 
-def run(*args, redirect_stdout=False, **kwargs):
+def run(*args, redirect_stdout=False, capture_output=True, **kwargs):
     if not redirect_stdout:
         return subprocess.run([cli_path, *args], **kwargs)
     delete = False if _system == 'Windows' else True

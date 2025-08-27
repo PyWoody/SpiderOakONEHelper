@@ -13,7 +13,7 @@ def destroy(*, yes=False, verbose=utils.Verbosity.NONE):
             return
     if verbose is not utils.Verbosity.NONE:
         proc = command.run(
-            '--destroy-shelved-x', '--verbose', redirect_stdout=True
+            '--destroy-shelved-x', '--verbose', redirect_stdout=True,
         )
     else:
         proc = command.run('--destroy-shelved-x')

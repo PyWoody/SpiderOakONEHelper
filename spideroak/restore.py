@@ -21,7 +21,6 @@ def restore(device, filepath, /, *, output=None, verbose=Verbosity.NONE):
         f'--output={output}',
         '--verbose' if verbose is Verbosity.HIGH else '',
         redirect_stdout=True if verbose is Verbosity.HIGH else False,
-        capture_output=True,
     )
     if proc.returncode != 0:
         raise Exception(f'Was not able to restore {filepath}')

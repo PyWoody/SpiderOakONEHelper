@@ -12,10 +12,7 @@ def shutdown(*, yes=False, verbose=Verbosity.NORMAL):
         if response.lower().strip() != 'y':
             print('Aborting shutdown')
             return
-    proc = command.run(
-        '--shutdown',
-        capture_output=False if verbose is Verbosity.NONE else True
-    )
+    proc = command.run('--shutdown')
     if proc.returncode != 0:
         raise Exception('Was not able to initiate shutdown')
     if proc.stderr:
