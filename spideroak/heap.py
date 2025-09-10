@@ -98,13 +98,13 @@ def by_history(filepath):
 
 
 def by_len(filepath):
-    heap = MaxHeap([], key=lambda x: len(x[1]))
+    heap = MaxHeap([], key=lambda x: x[1])
     for root, _, files in walk(filepath):
-        heap.push((root, files))
+        heap.push((root, len(files)))
     while True:
         try:
             trunk, files = heap.pop()
-            print(f'{len(files):,} | {trunk}')
+            print(f'{files:,} | {trunk}')
             if input('Continue? Y/n: ').lower().strip() == 'n':
                 break
         except Exception:
