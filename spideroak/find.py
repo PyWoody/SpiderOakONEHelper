@@ -60,4 +60,4 @@ def clean(pattern):
         if char == '*' and (index == 0 or pattern[index - 1] not in puncs):
             output.append('.')
         output.append(char)
-    return ''.join(output)
+    return ''.join(output).replace('\\', '\\\\')
