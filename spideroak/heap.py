@@ -111,7 +111,7 @@ def by_len(filepath):
             break
 
 
-def by_size(filepath):
+def by_file_size(filepath):
     size_re = re.compile(r'size:(\d+)')
     heap = MaxHeap([], key=lambda x: x[0])
     for root, lines, files in walk(filepath):
@@ -126,6 +126,24 @@ def by_size(filepath):
         try:
             size, file = heap.pop()
             print(f'{size:,} | {file}')
+            if input('Continue? Y/n: ').lower().strip() == 'n':
+                break
+        except Exception:
+            break
+
+
+def by_dir_size(filepath):
+    size_re = re.compile(r'size:(\d+)')
+    heap = MaxHeap([], key=lambda x: x[0])
+    for root, lines, files in walk(filepath):
+        total = 0
+        for line, f in zip(lines, files, strict=True):
+            total += int(size_re.search(line).group(1))
+        heap.push((total, root))
+    while True:
+        try:
+            size, root = heap.pop()
+            print(f'{size:,} | {root}')
             if input('Continue? Y/n: ').lower().strip() == 'n':
                 break
         except Exception:

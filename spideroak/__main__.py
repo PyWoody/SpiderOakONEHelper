@@ -164,7 +164,13 @@ heap_parser.add_argument(
     help='Sort by number of files in each directory',
 )
 heap_parser.add_argument(
-    '--size',
+    '--dir-size',
+    action='store_true',
+    default=False,
+    help='Sort by largest directory size',
+)
+heap_parser.add_argument(
+    '--file-size',
     action='store_true',
     default=False,
     help='Sort by largest file size',
@@ -480,7 +486,9 @@ elif args.command == 'heap':
     else:
         if args.len:
             heap.by_len(fpath)
-        if args.size:
-            heap.by_size(fpath)
+        if args.dir_size:
+            heap.by_dir_size(fpath)
+        if args.file_size:
+            heap.by_file_size(fpath)
         if args.history:
             heap.by_history(fpath)
