@@ -140,10 +140,8 @@ def by_file_size(filepath):
 def by_dir_size(filepath):
     size_re = re.compile(r'size:(\d+)')
     heap = MaxHeap([], key=lambda x: x[0])
-    for root, lines, files in walk(filepath):
-        total = 0
-        for line, f in zip(lines, files, strict=True):
-            total += int(size_re.search(line).group(1))
+    for root, lines, _ in walk(filepath):
+        total = sum(int(size_re.search(line).group(1)) for line in lines)
         heap.push((total, root))
     while True:
         try:
