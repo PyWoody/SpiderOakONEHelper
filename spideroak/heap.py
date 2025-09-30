@@ -2,6 +2,11 @@ import heapq
 import re
 
 
+GB = 1024 * 1024 * 1024
+MB = 1024 * 1024
+KB = 1024
+
+
 class BaseHeap:
 
     def __init__(self, items, key=None):
@@ -125,7 +130,7 @@ def by_file_size(filepath):
     while True:
         try:
             size, file = heap.pop()
-            print(f'{size:,} | {file}')
+            print(f'{humanize(size)} | {file}')
             if input('Continue? Y/n: ').lower().strip() == 'n':
                 break
         except Exception:
@@ -143,8 +148,18 @@ def by_dir_size(filepath):
     while True:
         try:
             size, root = heap.pop()
-            print(f'{size:,} | {root}')
+            print(f'{humanize(size)} | {root}')
             if input('Continue? Y/n: ').lower().strip() == 'n':
                 break
         except Exception:
             break
+
+
+def humanize(_bytes):
+    if _bytes > GB:
+        return f'{_bytes / GB:.2f} GB'
+    if _bytes > MB:
+        return f'{_bytes / MB:.2f} MB'
+    if _bytes > KB:
+        return f'{_bytes / KB:.2f} KB'
+    return f'{_bytes} bytes'
